@@ -1,0 +1,4 @@
+ SELECT SUBSTR(an, 1, 12), hospcode.name, iptran.dep, depcode.name, iptran.dateadm, iptran.datedsc, iptran.disch, iptran.totchg, iptran.party3, iptran.paid FROM IPTRAN, HOSPCODE, DEPCODE WHERE hospcode.code=iptran.hospcare AND depcode.code=iptran.dep AND RIGHT(iptran.datedsc, 2)=myy ORDER BY iptran.dep, 1 INTO CURSOR YRP_LOSD
+ CREATE REPORT YRP_LOSD.FRX FROM YRP_LOSD COLUMN NOOVERWRITE WIDTH 200
+ REPORT FORMAT YRP_LOSD.FRX PDSETUP NOEJECT SUMMARY TO PRINTER NOCONSOLE
+*

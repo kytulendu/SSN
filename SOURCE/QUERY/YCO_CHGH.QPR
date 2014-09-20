@@ -1,0 +1,4 @@
+ SELECT hospcode.name, optran.yymm, optran.gp, optran.med, optran.surg, optran.orth, optran.obg, optran.eye, optran.ent, optran.er, optran.other, optran.admit, optran.clab, optran.cbldb, optran.cpath, optran.cxray, optran.cinvt, optran.coprn, optran.cpros, optran.canes, optran.cdrug, optran.crehb, optran.cther, optran.cvhcl, hospcode.code, optran.visit, optran.cdf FROM HOSPCODE, OPTRAN WHERE optran.hospcare=hospcode.code AND LEFT(optran.yymm, 2)=myy ORDER BY hospcode.name INTO CURSOR YCO_CHGH
+ CREATE REPORT YCO_CHGH.FRX FROM YCO_CHGH COLUMN NOOVERWRITE WIDTH 200
+ REPORT FORMAT YCO_CHGH.FRX PREVIEW
+*

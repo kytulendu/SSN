@@ -1,0 +1,4 @@
+ SELECT hospcode.name, optran.yymm, optran.admit, optran.coprn, optran.cpros, optran.canes, optran.cdrug, optran.crehb, optran.cther, optran.cvhcl, optran.gp, optran.med, optran.surg, optran.orth, optran.obg, optran.eye, optran.ent, optran.er, optran.other, optran.poprn, optran.ppros, optran.panes, optran.pdrug, optran.prehb, optran.pther, optran.pvhcl, optran.hospcare, optran.visit, optran.pdf, optran.cdf FROM HOSPCODE, OPTRAN WHERE optran.hospcare=hospcode.code AND LEFT(optran.yymm, 2)=myy ORDER BY optran.hospcare INTO CURSOR Y_O_CHGS
+ CREATE REPORT \SSN24\Y_O_CHGS.FRX FROM Y_O_CHGS COLUMN WIDTH 200
+ REPORT FORMAT \SSN24\Y_O_CHGS.FRX PDSETUP NOEJECT TO PRINTER NOCONSOLE
+*

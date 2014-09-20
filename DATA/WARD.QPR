@@ -1,0 +1,4 @@
+SELECT Iptrana.an, Iptrana.hn, Iptrana.pttyp, Iptrana.dep, Iptrana.ward,;
+  Iptrana.dateadm, Iptrana.hospcare, Wardcode.name;
+ FROM iptrana, wardcode;
+ WHERE Wardcode.code = Iptrana.ward

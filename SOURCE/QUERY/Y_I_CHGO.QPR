@@ -1,0 +1,4 @@
+ SELECT SUBSTR(an, 1, 12), hospcode.name, iptran.dateadm, iptran.datedsc, iptran.disch, iptran.totchg, icdcm1.code, icdcm1.desc, iptran.party3, iptran.paid FROM IPTRAN, HOSPCODE, ICDCM1 WHERE hospcode.code=iptran.hospcare AND icdcm1.code=iptran.op1 AND RIGHT(iptran.datedsc, 2)=myy ORDER BY icdcm1.code, 1 INTO CURSOR Y_I_CHGO
+ CREATE REPORT Y_I_CHGO.FRX FROM Y_I_CHGO COLUMN NOOVERWRITE WIDTH 200
+ REPORT FORMAT Y_I_CHGO.FRX PDSETUP NOEJECT SUMMARY TO PRINTER NOCONSOLE
+*

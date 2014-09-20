@@ -1,0 +1,4 @@
+ SELECT DISTINCT iptran.hospcare, hospcode.name, iptran.an, iptran.datedsc, iptran.dg1 FROM IPTRAN, HOSPCODE WHERE hospcode.code=iptran.hospcare AND RIGHT(iptran.datedsc, 2)=myy ORDER BY iptran.hospcare INTO CURSOR GROUP_DX
+ CREATE REPORT GROUP_DX.FRX FROM GROUP_DX COLUMN NOOVERWRITE WIDTH 80
+ REPORT FORMAT GROUP_DX.FRX PDSETUP NOEJECT SUMMARY TO PRINTER NOCONSOLE
+*

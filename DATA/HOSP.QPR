@@ -1,0 +1,4 @@
+SELECT *;
+ FROM iptrans, hospcode;
+ WHERE Iptrans.hospcare = Hospcode.code;
+ ORDER BY Iptrans.hn, Iptrans.ssn, Iptrans.hospcare

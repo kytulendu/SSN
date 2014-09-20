@@ -1,0 +1,6 @@
+ SELECT optran.hospcare, SUM(optran.visit), SUM(optran.clab+optran.cbldb+optran.cpath+optran.cxray+optran.cinvt+optran.coprn+optran.cpros+optran.canes+optran.cdrug+optran.crehb+optran.cther+optran.cvhcl+optran.paid), optran.yymm FROM OPTRAN GROUP BY optran.hospcare ORDER BY optran.hospcare INTO DBF OPD_SUM.DBF
+ SELECT SUBSTR(an, 1, 12), iptran.hospcare, hospcode.name, CTOD(iptran.datedsc)-CTOD(iptran.dateadm)+1, SUM(iptran.totchg), SUM(IIF(SUBSTR(disch, 3, 1)='1', 1, 0)), SUM(IIF(SUBSTR(disch, 3, 1)='2', 1, 0)), SUM(IIF(SUBSTR(disch, 3, 1)='3', 1, 0)), SUM(IIF(SUBSTR(disch, 3, 1)='4', 1, 0)), SUM(IIF(SUBSTR(disch, 3, 1)='8' OR SUBSTR(disch, 3, 1)='9', 1, 0)), COUNT(disch) FROM IPTRAN, HOSPCODE WHERE hospcode.code=iptran.hospcare GROUP BY iptran.hospcare ORDER BY 1 INTO DBF IPD_SUM.DBF
+ SELECT opd_sum.hospcare, opd_sum.sum_visit, opd_sum.sum_exp_3, ipd_sum.* FROM OPD_SUM, IPD_SUM WHERE ipd_sum.exp_1=opd_sum.hospcare ORDER BY opd_sum.hospcare INTO CURSOR Y_I_SUM
+ CREATE REPORT Y_I_SUM.FRX FROM Y_I_SUM COLUMN NOOVERWRITE WIDTH 200
+ REPORT FORMAT Y_I_SUM.FRX PREVIEW
+*

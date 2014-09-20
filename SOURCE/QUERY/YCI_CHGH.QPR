@@ -1,0 +1,4 @@
+ SELECT SUBSTR(an, 1, 12), hospcode.name, iptran.dateadm, iptran.datedsc, iptran.disch, iptran.totchg, iptran.party3, iptran.paid FROM IPTRAN, HOSPCODE WHERE hospcode.code=iptran.hospcare AND RIGHT(iptran.datedsc, 2)=myy ORDER BY 1 INTO CURSOR YCI_CHGH
+ CREATE REPORT YCI_CHGH.FRX FROM YCI_CHGH COLUMN NOOVERWRITE WIDTH 200
+ REPORT FORMAT YCI_CHGH.FRX PREVIEW
+*

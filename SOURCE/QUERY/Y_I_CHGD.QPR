@@ -1,0 +1,4 @@
+ SELECT hospcode.name, iptran.dateadm, iptran.datedsc, iptran.disch, iptran.totchg, depcode.name, iptran.dep, SUBSTR(an, 1, 12), iptran.paid, iptran.party3 FROM IPTRAN, HOSPCODE, DEPCODE WHERE hospcode.code=iptran.hospcare AND depcode.code=iptran.dep AND RIGHT(iptran.datedsc, 2)=myy ORDER BY iptran.dep, 8 INTO CURSOR Y_I_CHGD
+ CREATE REPORT Y_I_CHGD.FRX FROM Y_I_CHGD COLUMN NOOVERWRITE WIDTH 200
+ REPORT FORMAT Y_I_CHGD.FRX PDSETUP NOEJECT SUMMARY TO PRINTER NOCONSOLE
+*

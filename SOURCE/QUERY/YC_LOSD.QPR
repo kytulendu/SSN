@@ -1,0 +1,3 @@
+ SELECT SUBSTR(an, 1, 12), hospcode.name, iptran.dep, depcode.name, iptran.dateadm, iptran.datedsc, iptran.disch, iptran.totchg, iptran.party3, iptran.paid FROM IPTRAN, HOSPCODE, DEPCODE WHERE hospcode.code=iptran.hospcare AND depcode.code=iptran.dep AND RIGHT(iptran.datedsc, 2)=myy ORDER BY iptran.dep, 1 INTO CURSOR YC_LOSD
+ REPORT FORMAT YRP_LOSD.FRX PREVIEW
+*

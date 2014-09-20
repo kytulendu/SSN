@@ -1,0 +1,327 @@
+    1  *:*****************************************************************************
+    2  *:
+    3  *: Procedure file: C:\SSN24\OPADD2.PRG
+    4  *:
+    5  *:         System: Ssn
+    6  *:         Author: Thierawat Jittnoon
+    7  *:      Copyright (c) 1997, 10
+    8  *:  Last modified: 11/13/97     10:17
+    9  *:
+   10  *:  Procs & Fncts: V_HOSP
+   11  *:               : V_MM
+   12  *:               : V_VISIT
+   13  *:
+   14  *:         Set by: MAIN.PRG                          
+   15  *:               : MAIN.PRG                          
+   16  *:
+   17  *:          Calls: VARREAD()          (function  in ?)
+   18  *:               : MHELP.PRG
+   19  *:               : OBJNUM()           (function  in ?)
+   20  *:               : SUBSTR()           (function  in ?)
+   21  *:               : DTOC()             (function  in ?)
+   22  *:               : DATE()             (function  in ?)
+   23  *:               : STR()              (function  in ?)
+   24  *:               : VAL()              (function  in ?)
+   25  *:               : CHR()              (function  in ?)
+   26  *:               : V_MM               (procedure in OPADD2.PRG)
+   27  *:               : V_HOSP             (procedure in OPADD2.PRG)
+   28  *:               : V_VISIT            (procedure in OPADD2.PRG)
+   29  *:               : EMPTY()            (function  in ?)
+   30  *:               : WCOLS()            (function  in ?)
+   31  *:               : LEN()              (function  in ?)
+   32  *:               : READKEY()          (function  in ?)
+   33  *:               : ALEN()             (function  in ?)
+   34  *:               : SPACE()            (function  in ?)
+   35  *:
+   36  *:           Uses: OPTRAN.DBF         
+   37  *:
+   38  *:   Memory Files: HOSP.MEM
+   39  *:
+   40  *:      Documented 11/13/97 at 17:03               FoxDoc  version 2.10f
+   41  *:*****************************************************************************
+   42      *clear
+   43      set message to 22 center
+   44      set talk off
+   45      set proc to opadd2
+   46      
+   47      restore from hosp additive
+   48      on key label f1 do mhelp with varread()
+   49      on key label alt+1 _curobj=objnum(mm)
+   50      on key label alt+2 _curobj=objnum(m.plab)
+   51      
+   52      select 1
+   53      use data\optran order tag yymm
+   54      scatter memvar blank
+   55      mm=substr(dtoc(date()),4,2)
+   56      yy=str(val(substr(dtoc(date()),7,2))+1900+543-2500,2)
+   57      hospname=''
+   58      dimension wmenu(3)
+   59      wmenu(1)='   รพ.ต่อไป   '
+   60      wmenu(2)=' กลับรายการหลัก '
+   61      wmenu(3)='     แก้ไข    '
+   62      
+   63      define window opadd from 0,0 to 24,79 title ' Social Security Out Patient Summary '
+   64      activate window opadd
+   65      hdr2='Ctrl+W, Ctrl+End = บันทึก        Esc = ยกเลิกข้อมูล'
+   66      hdr3='   Hot keys : Alt+1 ไปที่เดือน Alt+2 ไปที่จำนวนผู้รับบริการชันสูตร'
+   67      
+   68      on key label pgup ?? chr(7)
+   69      on key label pgdn ?? chr(7)
+   70      
+   71    ษอdo while .t.
+   72    บ    activate screen
+   73    บ    clear
+   74    บ    activate window opadd
+   75    บ    @ 2,0,2,78 box
+   76    บ    @ 19,0,19,78 box
+   77    บ    @ 1,0 say '1' color gr+/r
+   78    บ    @ 1,3 say 'ประจำเดือน'
+   79    บ    @ 1,15 get mm valid v_mm(mm)
+   80    บ    @ 1,17 say '/'
+   81    บ    @ 1,18 get yy picture '99' message 'ปี พ.ศ.' valid val(yy)>33
+   82    บ    @ 1,21 say 'โรงพยาบาลที่ให้บริการ'
+   83    บ    @ 1,44 get m.hospcare picture '999999999999' message 'รหัส รพ.ที่ให้บริการ F1 = List' valid v_hosp()
+   84    บ    @ 3,28 say 'ครั้ง'
+   85    บ    @ 4,3 say 'ผู้รับการตรวจทั้งหมด' color gr+/b
+   86    บ    @ 4,27 say '     '
+   87    บ    *@ 4,27 get m.visit picture '99999' valid !empty(m.visit) message ' '
+   88    บ    @ 5,3 say 'สาเหตุจากการเจ็บป่วย'
+   89    บ    @ 5,27 get m.ill picture '99999'  message 'จำนวนป่วย + ได้รับอุบัติเหตุต้องไม่เกินจำนวนผู้ป่วยทั้งหมด'
+   90    บ    @ 6,3 say 'สาเหตุจากอุบัติเหตุ'
+   91    บ    @ 6,27 get m.acc picture '99999' valid v_visit() message 'จำนวนป่วย + ได้รับอุบัติเหตุต้องไม่เกินจำนวนผู้ป่วยทั้งหมด'
+   92    บ    @ 7,5 say 'ห้องตรวจ GP'
+   93    บ    @ 7,27 get m.gp picture '99999' message ' ' valid m.gp<=m.visit
+   94    บ    @ 8,5 say 'ห้องตรวจ อายุรกรรม'
+   95    บ    @ 8,27 get m.med picture '99999' message ' ' valid m.med<=m.visit
+   96    บ    @ 9,5 say 'ห้องตรวจ ศัลยกรรม'
+   97    บ    @ 9,27 get m.surg picture '99999' valid m.surg<=m.visit
+   98    บ    @ 10,5 say 'ห้องตรวจ Ortho'
+   99    บ    @ 10,27 get m.orth picture '99999' valid m.orth<=m.visit
+  100    บ    @ 11,5 say 'ห้องตรวจ สูตินรีเวช'
+  101    บ    @ 11,27 get m.obg picture '99999' valid m.obg<=m.visit
+  102    บ    @ 12,5 say 'ห้องตรวจ ตา'
+  103    บ    @ 12,27 get m.eye picture '99999' valid m.eye<=m.visit
+  104    บ    @ 13,5 say 'ห้องตรวจ หูคอจมูก'
+  105    บ    @ 13,27 get m.ent picture '99999' valid m.ent<=m.visit
+  106    บ    @ 14,5 say 'ห้องตรวจ อุบัติเหตุ'
+  107    บ    @ 14,27 get m.er picture '99999' valid m.er<=m.visit
+  108    บ    @ 15,5 say 'ห้องตรวจ จิตเวช'
+  109    บ    @ 15,27 get m.psych picture '99999' valid m.psych<=m.visit
+  110    บ    @ 16,5 say 'ห้องตรวจ ทันตกรรม'
+  111    บ    @ 16,27 get m.dent picture '99999' valid m.dent<=m.visit
+  112    บ    @ 17,3 say 'ผู้รับบริการอื่นๆ' color gr+/b
+  113    บ    @ 17,27 get m.other picture '99999' message ' '
+  114    บ    *@ 18,3 say 'รับไว้เป็นผู้ป่วยใน' color gr+/b
+  115    บ    *@ 18,27 get m.admit picture '9,999' valid m.admit<=m.visit
+  116    บ    @ 3,34,19,34 box
+  117    บ    @ 3,52 say '2' color gr+/r
+  118    บ    @ 3,54 say 'จำนวนผู้ป่วย'
+  119    บ    @ 3,68 say 'ค่าบริการ'
+  120    บ    @ 4,36 say 'ชันสูตร'
+  121    บ    @ 4,58 get m.plab picture '99999' valid m.plab<=m.visit and !empty(m.ill)
+  122    บ    @ 4,68 get m.clab picture '9999999' when !empty(m.plab)
+  123    บ    @ 5,36 say 'คลังเลือด'
+  124    บ    @ 5,58 get m.pbldb picture '99999' valid m.pbldb<=m.visit
+  125    บ    @ 5,68 get m.cbldb picture '9999999' when !empty(m.pbldb)
+  126    บ    @ 6,36 say 'พยาธิวิทยา'
+  127    บ    @ 6,58 get m.ppath picture '99999' valid m.ppath<=m.visit
+  128    บ    @ 6,68 get m.cpath picture '9999999' when !empty(m.ppath)
+  129    บ    @ 7,36 say 'รังสีวิทยา'
+  130    บ    @ 7,58 get m.pxray picture '99999' valid m.pxray<=m.visit
+  131    บ    @ 7,68 get m.cxray picture '9999999' when !empty(m.pxray)
+  132    บ    @ 8,36 say 'ตรวจวินิจฉัยอื่นๆ'
+  133    บ    @ 8,58 get m.pinvt picture '99999' valid m.pinvt<=m.visit
+  134    บ    @ 8,68 get m.cinvt picture '9999999' when !empty(m.pinvt)
+  135    บ    @ 9,36 say 'ผ่าตัด'
+  136    บ    @ 9,58 get m.poprn picture '99999' valid m.poprn<=m.visit
+  137    บ    @ 9,68 get m.coprn picture '9999999' when !empty(m.poprn)
+  138    บ    @ 10,36 say 'อวัยวะเทียมอุปกรณ์ฯ'
+  139    บ    @ 10,58 get m.ppros picture '99999' valid m.ppros<=m.visit
+  140    บ    @ 10,68 get m.cpros picture '9999999' when !empty(m.ppros)
+  141    บ    @ 11,36 say 'ระงับความรู้สึก'
+  142    บ    @ 11,58 get m.panes picture '99999' valid m.panes<=m.visit
+  143    บ    @ 11,68 get m.canes picture '9999999' when !empty(m.panes)
+  144    บ    @ 12,36 say 'ค่ายาและเวชภัณฑ์'
+  145    บ    @ 12,58 get m.pdrug picture '99999' valid m.pdrug<=m.visit
+  146    บ    @ 12,68 get m.cdrug picture '9999999' when !empty(m.pdrug)
+  147    บ    @ 13,36 say 'เวชกรรมฟื้นฟู'
+  148    บ    @ 13,58 get m.prehb picture '99999' valid m.prehb<=m.visit
+  149    บ    @ 13,68 get m.crehb picture '9999999' when !empty(m.prehb)
+  150    บ    @ 14,36 say 'การบำบัดรักษาอื่นๆ'
+  151    บ    @ 14,58 get m.pther picture '99999' valid m.pther<=m.visit
+  152    บ    @ 14,68 get m.cther picture '9999999' when !empty(m.pther)
+  153    บ    @ 15,36 say 'ค่าพาหนะ'
+  154    บ    @ 15,58 get m.pvhcl picture '99999' valid m.pvhcl<=m.visit
+  155    บ    @ 15,68 get m.cvhcl picture '9999999' when !empty(m.pvhcl)
+  156    บ    @ 16,36 say 'ค่าธรรมเนียมแพทย์'
+  157    บ    @ 16,58 get m.pdf picture '99999' valid m.pdf<=m.visit
+  158    บ    @ 16,68 get m.cdf picture '9999999' when !empty(m.pdf)
+  159    บ    @ 18,36 say 'เก็บเพิ่มจากผู้ป่วย'
+  160    บ    @ 18,68 get m.paid picture '9999999'
+  161    บ    @ 20,0 clear
+  162    บ    @ 20,(wcols()-len(hdr2))/2 say hdr2 color gr+/b
+  163    บ    @ 21,(wcols()-len(hdr3))/2 say hdr3 color n/w+
+  164    บ    read
+  165    บ  ฺฤif readkey()=12 or readkey()=268
+  166    บ  ณ    set escape off
+  167    บ  ณ    on key label f1
+  168    บ  ณ    on key label pgup
+  169    บ  ณ    on key label pgdn
+  170    บ  ณ    on key label alt+1
+  171    บ  ณ    on key label alt+2
+  172    บ  ณ    ?chr(13)
+  173    บ  ณ    wait 'Terminated by user, Data are NOT saved to disk!' window timeout 1
+  174    บ  ณ    clear
+  175    บ  ณ    release window opadd
+  176    บ  ณ    set proc to
+  177  <อออออออออreturn to main
+  178    บ  ภฤendif
+  179    บ    m.yymm=yy+mm
+  180    บ    m.hospmain=hospcode
+  181    บ    @ 20,0 clear
+  182    บ  ึฤfor i=1 to alen(wmenu)
+  183    บ  บ    @ 20,26*i-18 prompt wmenu(i) message ' '
+  184    บ  ำฤendfor
+  185    บ    menu to choice
+  186    บ  ีอdo case
+  187    บ  ฦอcase choice=1
+  188    บ  ณ  ฺฤif empty(m.hospcare) or empty(m.hospmain)
+  189    บ  ณ  ณ    wait 'ไม่มีรหัส รพ. กรุณากรอกใหม่' window timeout 1
+  190    ^ออออออออออloop
+  191    บ  ณ  รฤelse
+  192    บ  ณ  ณ    insert into data\optran from memvar
+  193    บ  ณ  ณ    select optran
+  194    บ  ณ  ณ    scatter memvar blank
+  195    บ  ณ  ณ    @ 1,56 say space(20)
+  196    บ  ณ  ณ    @ 4,27 say space(5)
+  197    บ  ณ  ณ    @ 20,1 clear to 20,76
+  198    ^ออออออออออloop
+  199    บ  ณ  ภฤendif
+  200    บ  ฦอcase choice=2
+  201    บ  ณ  ฺฤif empty(m.hospcare) or empty(m.hospmain)
+  202    บ  ณ  ณ    wait 'ไม่มีรหัส รพ. กรุณากรอกใหม่' window timeout 1
+  203    ^ออออออออออloop
+  204    บ  ณ  รฤelse
+  205    บ  ณ  ณ    insert into data\optran from memvar
+  206    vออออออออออexit
+  207    บ  ณ  ภฤendif
+  208    บ  ฦอcase choice=3
+  209    บ  ณ    @ 20,1 clear to 20,76
+  210    บ  ณ    @ 1,56 say space(20)
+  211    ^อออออออloop
+  212    บ  ิอendcase
+  213    ศอenddo
+  214      
+  215      wait 'จบการกรอกข้อมูล' window timeout 2
+  216      release window opadd
+  217      on key label alt+1
+  218      on key label alt+2
+  219      on key label f1
+  220      on key label pgup
+  221      on key label pgdn
+  222      set proc to
+  223      return
+  224      
+  225      *************************
+  246  *!*****************************************************************************
+  247  *!
+  248  *!      Procedure: V_HOSP
+  249  *!
+  250  *!      Called by: OPADD2.PRG                        
+  251  *!               : V_SS               (procedure in G1.PRG)
+  252  *!               : V_PTTYP            (procedure in G1.PRG)
+  253  *!
+  254  *!          Calls: EMPTY()            (function  in ?)
+  255  *!               : CHR()              (function  in ?)
+  256  *!               : FOUND()            (function  in ?)
+  257  *!               : SPACE()            (function  in ?)
+  258  *!               : ALLTRIM()          (function  in ?)
+  259  *!               : SUBSTR()           (function  in ?)
+  260  *!               : OBJNUM()           (function  in ?)
+  261  *!               : USED()             (function  in ?)
+  262  *!
+  263  *!           Uses: CODEFILE.DBF       
+  264  *!
+  265  *!*****************************************************************************
+  246      procedure v_hosp
+  247      *************************
+  248    ฺฤif empty(m.hospcare)
+  249    ณ    ?chr(7)
+  250    ณ    wait 'โปรดใส่รหัส รพ.ที่ให้บริการ' window timeout 1
+  251  <ออออออreturn 0
+  252    ภฤendif
+  253      
+  254      select codefile
+  255      set order to tag code
+  256      set filter to varname='CARE'
+  257      seek (m.hospcare)
+  258    ฺฤif !found()
+  259    ณ    @ 1,56 say space(20)
+  260    ณ    @ 1,56 say 'Unknown'
+  261    รฤelse
+  262    ณ    hospname=name
+  263    ณ    @ 1,56 say space(20)
+  264    ณ    @ 1,56 say alltrim(substr(hospname,1,20)) color gr+/b
+  265    ภฤendif
+  266      set filter to
+  267      *keyboard '{ENTER}'
+  268      select optran
+  269      locate for yymm=yy+mm and hospcare=m.hospcare
+  270    ฺฤif found()
+  271    ณ    ?? chr(7)
+  272    ณ    wait 'ข้อมูลนี้ เคยกรอกไปแล้ว กรุณาเลือกใหม่' window timeout 2
+  273    ณ    _curobj=objnum(mm)
+  274  <ออออออreturn
+  275    ภฤendif
+  276      return 1
+  277      
+  278      ******************
+  290  *!*****************************************************************************
+  291  *!
+  292  *!      Procedure: V_MM
+  293  *!
+  294  *!      Called by: OPADD2.PRG                        
+  295  *!
+  296  *!          Calls: READKEY()          (function  in ?)
+  297  *!               : CHR()              (function  in ?)
+  298  *!               : VAL()              (function  in ?)
+  299  *!
+  300  *!*****************************************************************************
+  290      procedure v_mm
+  291      ******************
+  292      parameter mval
+  293      
+  294    ฺฤif readkey()=4 or readkey()=260   && UpArrow
+  295    ณ    ?? chr(7)
+  296  <ออออออreturn 0
+  297    ภฤendif
+  298    ฺฤif readkey()=0 or readkey()=256   && LeftArrow
+  299    ณ    ?? chr(7)
+  300  <ออออออreturn 0
+  301    ภฤendif
+  302      
+  303    ฺฤif val(mval)<1 or val(mval)>12
+  304    ณ    ??chr(7)
+  305    ณ    wait 'Invalid input' window timeout 1
+  306  <ออออออreturn 0
+  307    รฤelse
+  308    ณ    m.mm=mval
+  309    ภฤendif
+  310      return
+  311      
+  312      ******************
+  320  *!*****************************************************************************
+  321  *!
+  322  *!      Procedure: V_VISIT
+  323  *!
+  324  *!      Called by: OPADD2.PRG                        
+  325  *!
+  326  *!*****************************************************************************
+  320      procedure v_visit
+  321      ******************
+  322      
+  323      m.visit=m.ill+m.acc
+  324      @ 4,27 say m.visit size 1,5 color gr+/b
+  325      
+  326      return
+  327      *: EOF: OPADD2.ACT

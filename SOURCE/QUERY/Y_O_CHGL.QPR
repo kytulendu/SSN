@@ -1,0 +1,4 @@
+ SELECT hospcode.name, optran.yymm, optran.admit, optran.clab, optran.cbldb, optran.cpath, optran.cxray, optran.cinvt, optran.gp, optran.med, optran.surg, optran.orth, optran.obg, optran.eye, optran.ent, optran.er, optran.other, optran.plab, optran.pbldb, optran.ppath, optran.pxray, optran.pinvt, optran.hospcare, optran.visit FROM HOSPCODE, OPTRAN WHERE optran.hospcare=hospcode.code AND LEFT(optran.yymm, 2)=myy ORDER BY optran.hospcare INTO CURSOR Y_O_CHGL
+ CREATE REPORT Y_O_CHGL.FRX FROM Y_O_CHGL COLUMN NOOVERWRITE WIDTH 200
+ REPORT FORMAT Y_O_CHGL.FRX PDSETUP NOEJECT TO PRINTER NOCONSOLE
+*
